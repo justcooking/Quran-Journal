@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hifz Journal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="geo-bg"></div>
+  <div class="geo-diamond"></div>
+  <div class="geo-diamond2"></div>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-box">
+      <div class="auth-logo">
+        <div class="lstar"></div>
+        <div>
+          <div class="ltxt">Hifz Journal</div>
+          <div class="lsub">Quran memorization tracker</div>
+        </div>
+      </div>
+      <div class="bism">بسم الله الرحمن الرحيم</div>
+      <div class="auth-tabs">
+        <div class="auth-tab on" onclick="switchAuth('login')">Sign in</div>
+        <div class="auth-tab" onclick="switchAuth('signup')">Create account</div>
+      </div>
+      <div id="login-form">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="your@email.com">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="••••••••">
+        <button class="btn-primary" onclick="login()">Sign in</button>
+      </div>
+      <div id="signup-form" style="display:none">
+        <label>Email</label>
+        <input type="email" id="signup-email" placeholder="your@email.com">
+        <label>Username</label>
+        <input type="text" id="signup-username" placeholder="e.g. abdullah92">
+        <label>Display name</label>
+        <input type="text" id="signup-name" placeholder="e.g. Abdullah">
+        <label>Gender</label>
+        <select id="signup-gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+        <label>Password</label>
+        <input type="password" id="signup-password" placeholder="Min 6 characters">
+        <button class="btn-primary" onclick="signup()">Create account</button>
+      </div>
+      <div id="auth-msg" class="auth-msg"></div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app" style="display:none">
+    <div class="wrap">
+      <div class="topbar">
+        <div class="logo">
+          <div class="lstar"></div>
+          <div>
+            <div class="ltxt">Hifz Journal</div>
+            <div class="lsub">Quran memorization tracker</div>
+          </div>
+        </div>
+        <nav>
+          <div class="nl on" onclick="go('dash')">Dashboard</div>
+          <div class="nl" onclick="go('log')">Log</div>
+          <div class="nl" onclick="go('surahs')">Surahs</div>
+          <div class="nl" onclick="go('revision')">Revision</div>
+          <div class="nl" onclick="go('community')">Community</div>
+          <div class="nl" onclick="go('resources')">Resources</div>
+          <div class="nl" onclick="go('profile')">Profile</div>
+          <div class="nl signout" onclick="signout()">Sign out</div>
+        </nav>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="page on" id="p-dash">
+        <div class="bism">بسم الله الرحمن الرحيم</div>
+        <div class="ttl">Assalamu Alaikum, <span id="dash-name">...</span></div>
+        <div class="sub" id="dash-sub">Loading your progress...</div>
+        <div class="grid4">
+          <div class="mc"><div class="ml">Surahs memorized</div><div class="mv" id="d-surahs">–</div><div class="ms">of 114 total</div></div>
+          <div class="mc"><div class="ml">Current streak</div><div class="mv" id="d-streak">–</div><div class="ms">days in a row</div></div>
+          <div class="mc"><div class="ml">Revision score</div><div class="mv" id="d-revscore">–</div><div class="ms">consistency rate</div></div>
+          <div class="mc"><div class="ml">Ayahs memorized</div><div class="mv" id="d-ayahs">–</div><div class="ms">of 6,236 total</div></div>
+        </div>
+        <div class="grid2">
+          <div>
+            <div class="card" style="margin-bottom:1.25rem">
+              <div class="ctit"><div class="cdot"></div>Recent surah progress</div>
+              <div id="dash-surah-list"><div class="loading">Loading...</div></div>
+              <button class="btn" style="margin-top:10px;font-size:11px" onclick="go('surahs')">View all 114 surahs →</button>
+            </div>
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Activity heatmap</div>
+              <div style="display:flex;margin-bottom:4px"><span style="font-size:10px;color:var(--cm)">6 months ago</span><span style="font-size:10px;color:var(--cm);margin-left:auto">Today</span></div>
+              <div class="hg" id="heatmap"></div>
+              <div style="display:flex;gap:5px;align-items:center;margin-top:8px">
+                <span style="font-size:10px;color:var(--cm)">Less</span>
+                <div style="width:9px;height:9px;border-radius:2px;background:var(--gs)"></div>
+                <div style="width:9px;height:9px;border-radius:2px;background:rgba(184,191,201,0.2)"></div>
+                <div style="width:9px;height:9px;border-radius:2px;background:rgba(184,191,201,0.45)"></div>
+                <div style="width:9px;height:9px;border-radius:2px;background:rgba(184,191,201,0.7)"></div>
+                <div style="width:9px;height:9px;border-radius:2px;background:var(--sl)"></div>
+                <span style="font-size:10px;color:var(--cm)">More</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Revise now</div>
+              <div style="font-size:10px;color:var(--cm);margin-bottom:9px">Longest untouched first</div>
+              <div id="dash-revise-list"><div class="loading">Loading...</div></div>
+              <button class="btn full" onclick="go('revision')">Go to revision tracker →</button>
+            </div>
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Daily commitment</div>
+              <div style="font-size:10px;color:var(--cm);margin-bottom:0.75rem">Pages per day required to finish</div>
+              <div style="text-align:center;margin:0.75rem 0">
+                <div style="font-family:'Cormorant Garamond',serif;font-size:44px;color:var(--sl);font-weight:600;line-height:1" id="dpg">1.7</div>
+                <div style="font-size:12px;color:var(--cm);margin-top:2px">pages per day</div>
+                <div style="font-size:10px;color:var(--sd);margin-top:5px" id="dctx">to complete in 2 years</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+                <span style="font-size:10px;color:var(--cm)">5 months</span>
+                <span style="font-size:11px;color:var(--sl)" id="dlbl">2 years</span>
+                <span style="font-size:10px;color:var(--cm)">10 years</span>
+              </div>
+              <input type="range" id="dslider" min="5" max="120" value="24" step="1">
+              <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--gb)">
+                <div style="text-align:center"><div style="font-size:13px;color:var(--sl)" id="dln">~10</div><div style="font-size:10px;color:var(--cm);text-transform:uppercase;letter-spacing:0.04em">Lines/day</div></div>
+                <div style="text-align:center"><div style="font-size:13px;color:var(--sl)" id="day2">~22</div><div style="font-size:10px;color:var(--cm);text-transform:uppercase;letter-spacing:0.04em">Ayahs/day</div></div>
+                <div style="text-align:center"><div style="font-size:13px;color:var(--sl)" id="djz">0.06</div><div style="font-size:10px;color:var(--cm);text-transform:uppercase;letter-spacing:0.04em">Juz/day</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Community ranking</div>
+              <div class="tabs">
+                <div class="tab on" onclick="switchRankTab(this,'surahs')">Surahs</div>
+                <div class="tab" onclick="switchRankTab(this,'streak')">Streak</div>
+                <div class="tab" onclick="switchRankTab(this,'revision')">Revision</div>
+              </div>
+              <div id="dash-ranking"><div class="loading">Loading...</div></div>
+              <button class="btn full" onclick="go('community')">View full community →</button>
+            </div>
+          </div>
+        </div>
+        <div class="ornm">✦ ✦ ✦</div>
+      </div>
+
+      <!-- LOG -->
+      <div class="page" id="p-log">
+        <div class="ttl">Log memorization</div>
+        <div class="sub">Record what you memorized today.</div>
+        <div class="grid2">
+          <div class="card">
+            <div class="ctit"><div class="cdot"></div>Today's session</div>
+            <label>Surah</label>
+            <select id="log-surah"></select>
+            <div class="frow">
+              <div><label>From ayah</label><input type="number" id="log-from" value="1" min="1"></div>
+              <div><label>To ayah</label><input type="number" id="log-to" value="5" min="1"></div>
+            </div>
+            <label>How confident do you feel?</label>
+            <div class="conf-row" id="conf-row">
+              <div class="conf-btn" data-val="weak" onclick="selConf(this)">Weak</div>
+              <div class="conf-btn on" data-val="okay" onclick="selConf(this)">Okay</div>
+              <div class="conf-btn" data-val="strong" onclick="selConf(this)">Strong</div>
+              <div class="conf-btn" data-val="solid" onclick="selConf(this)">Solid</div>
+            </div>
+            <label>Notes (optional)</label>
+            <textarea id="log-notes" rows="3" placeholder="e.g. Need to work on tajweed in ayah 7–8"></textarea>
+            <button class="btn-primary full" onclick="saveLog()">Save session</button>
+            <div id="log-msg" class="msg"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Today so far</div>
+              <div style="text-align:center;padding:0.75rem 0">
+                <div style="font-family:'Cormorant Garamond',serif;font-size:40px;color:var(--sl);font-weight:600" id="today-count">–</div>
+                <div style="font-size:12px;color:var(--cm)">ayahs logged today</div>
+              </div>
+              <div id="today-sessions" style="border-top:0.5px solid var(--gb);padding-top:10px"></div>
+            </div>
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Recent sessions</div>
+              <div id="recent-logs"><div class="loading">Loading...</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SURAHS -->
+      <div class="page" id="p-surahs">
+        <div class="ttl">All surahs</div>
+        <div class="sub">114 surahs — tap any to update your progress.</div>
+        <div class="tabs">
+          <div class="tab on" onclick="filterSurahs('all',this)">All</div>
+          <div class="tab" onclick="filterSurahs('memorized',this)">Memorized</div>
+          <div class="tab" onclick="filterSurahs('in_progress',this)">In progress</div>
+          <div class="tab" onclick="filterSurahs('not_started',this)">Not started</div>
+        </div>
+        <div class="slist" id="slist"><div class="loading">Loading...</div></div>
+        <!-- Surah detail modal -->
+        <div id="surah-modal" class="modal-overlay" style="display:none" onclick="closeModal()">
+          <div class="modal-box" onclick="event.stopPropagation()">
+            <div class="ctit" id="modal-title"></div>
+            <div id="modal-info" style="font-size:12px;color:var(--cm);margin-bottom:1rem"></div>
+            <label>Ayahs memorized so far</label>
+            <input type="number" id="modal-ayahs" min="0">
+            <label>Status</label>
+            <select id="modal-status">
+              <option value="not_started">Not started</option>
+              <option value="in_progress">In progress</option>
+              <option value="memorized">Memorized</option>
+            </select>
+            <div style="display:flex;gap:8px;margin-top:14px">
+              <button class="btn-primary" style="flex:1" onclick="saveProgress()">Save</button>
+              <button class="btn" onclick="closeModal()">Cancel</button>
+            </div>
+            <div id="modal-msg" class="msg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVISION -->
+      <div class="page" id="p-revision">
+        <div class="ttl">Revision tracker</div>
+        <div class="sub">Every memorized surah — sorted by how long since you last revised it.</div>
+        <div class="grid2">
+          <div class="card">
+            <div class="ctit"><div class="cdot"></div>Revision queue</div>
+            <div style="font-size:10px;color:var(--cm);margin-bottom:10px">Red = overdue · Amber = due soon · Green = recently revised</div>
+            <div id="rev-queue"><div class="loading">Loading...</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Revision history</div>
+              <div id="rev-history"><div class="loading">Loading...</div></div>
+            </div>
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Revision stats</div>
+              <div class="grid4" style="grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0">
+                <div class="mc"><div class="ml">This week</div><div class="mv" style="font-size:20px" id="rv-week">–</div><div class="ms">surahs revised</div></div>
+                <div class="mc"><div class="ml">Overdue</div><div class="mv" style="font-size:20px;color:#d07868" id="rv-overdue">–</div><div class="ms">need attention</div></div>
+                <div class="mc"><div class="ml">Avg gap</div><div class="mv" style="font-size:20px" id="rv-avg">–</div><div class="ms">days between</div></div>
+                <div class="mc"><div class="ml">Consistency</div><div class="mv" style="font-size:20px" id="rv-cons">–</div><div class="ms">revision rate</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMMUNITY -->
+      <div class="page" id="p-community">
+        <div class="ttl">Community</div>
+        <div class="sub">Memorize together. Stay accountable.</div>
+        <div class="grid2">
+          <div>
+            <div class="card" style="margin-bottom:1.25rem">
+              <div class="ctit"><div class="cdot"></div>Your communities</div>
+              <div id="my-communities"><div class="loading">Loading...</div></div>
+              <div style="display:flex;gap:8px;margin-top:12px">
+                <button class="btn" style="flex:1" onclick="showCreateComm()">+ Create community</button>
+                <button class="btn" style="flex:1" onclick="showJoinComm()">Join with code</button>
+              </div>
+            </div>
+            <div class="card" id="comm-leaderboard-card">
+              <div class="ctit"><div class="cdot"></div>Leaderboard</div>
+              <div style="font-size:11px;color:var(--cm);margin-bottom:8px" id="comm-lb-name">Select a community above</div>
+              <div class="tabs">
+                <div class="tab on" onclick="switchCommTab(this,'surahs')">Surahs</div>
+                <div class="tab" onclick="switchCommTab(this,'streak')">Streak</div>
+                <div class="tab" onclick="switchCommTab(this,'revision')">Revision</div>
+              </div>
+              <div id="comm-leaderboard"><div class="loading">Select a community to view rankings</div></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <!-- Create community form -->
+            <div class="card" id="create-comm-card" style="display:none">
+              <div class="ctit"><div class="cdot"></div>Create community</div>
+              <label>Community name</label>
+              <input type="text" id="cc-name" placeholder="e.g. Masjid Hifz Circle">
+              <label>Description (optional)</label>
+              <textarea id="cc-desc" rows="2" placeholder="What is this community for?"></textarea>
+              <label>Visibility</label>
+              <select id="cc-private">
+                <option value="false">Public — anyone can find it</option>
+                <option value="true">Private — invite only</option>
+              </select>
+              <label>Gender filter</label>
+              <select id="cc-gender">
+                <option value="mixed">Mixed</option>
+                <option value="brothers">Brothers only</option>
+                <option value="sisters">Sisters only</option>
+              </select>
+              <div style="display:flex;gap:8px;margin-top:14px">
+                <button class="btn-primary" style="flex:1" onclick="createCommunity()">Create</button>
+                <button class="btn" onclick="hideCreateComm()">Cancel</button>
+              </div>
+              <div id="cc-msg" class="msg"></div>
+            </div>
+            <!-- Join community form -->
+            <div class="card" id="join-comm-card" style="display:none">
+              <div class="ctit"><div class="cdot"></div>Join with invite code</div>
+              <label>Invite code</label>
+              <input type="text" id="jc-code" placeholder="8-character code">
+              <div style="display:flex;gap:8px;margin-top:14px">
+                <button class="btn-primary" style="flex:1" onclick="joinCommunity()">Join</button>
+                <button class="btn" onclick="hideJoinComm()">Cancel</button>
+              </div>
+              <div id="jc-msg" class="msg"></div>
+            </div>
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Recent activity</div>
+              <div id="comm-activity"><div class="loading">Loading...</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESOURCES -->
+      <div class="page" id="p-resources">
+        <div class="ttl">Resources</div>
+        <div class="sub">Curated tools, guides, and apps for serious memorization.</div>
+        <div class="grid2">
+          <div class="card">
+            <div class="ctit"><div class="cdot"></div>Apps</div>
+            <div class="res-item">
+              <div class="res-icon">Q</div>
+              <div>
+                <div class="res-title"><a href="https://quran.com" target="_blank" class="res-link">Quran.com</a></div>
+                <div class="res-desc">Clean recitation with word-by-word translation and audio by top reciters.</div>
+                <span class="res-tag">Free</span>
+              </div>
+            </div>
+            <div class="res-item">
+              <div class="res-icon">T</div>
+              <div>
+                <div class="res-title"><a href="https://tarteel.ai" target="_blank" class="res-link">Tarteel AI</a></div>
+                <div class="res-desc">AI-powered recitation checker — recite and it tells you where you went wrong.</div>
+                <span class="res-tag">Freemium</span>
+              </div>
+            </div>
+            <div class="res-item">
+              <div class="res-icon">S</div>
+              <div>
+                <div class="res-title"><a href="https://play.google.com/store/apps/details?id=com.QuranMemorization" target="_blank" class="res-link">Memorize Quran App</a></div>
+                <div class="res-desc">Spaced repetition system built specifically for ayah memorization.</div>
+                <span class="res-tag">Free</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Techniques</div>
+              <div class="res-item">
+                <div class="res-icon">↻</div>
+                <div>
+                  <div class="res-title">The 3×10 method</div>
+                  <div class="res-desc">Repeat each new ayah 10 times, then the group 10 times, then the full page 10 times. Proven to accelerate retention.</div>
+                  <span class="res-tag">Memorization</span>
+                </div>
+              </div>
+              <div class="res-item">
+                <div class="res-icon">↩</div>
+                <div>
+                  <div class="res-title">Spaced revision</div>
+                  <div class="res-desc">Revise new ayahs after 1 day, 3 days, 1 week, then monthly. The forgetting curve is real — this defeats it.</div>
+                  <span class="res-tag">Revision</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Videos</div>
+              <div class="res-item">
+                <div class="res-icon">▶</div>
+                <div>
+                  <div class="res-title"><a href="https://www.youtube.com/watch?v=ldYzbV0NDp8" target="_blank" class="res-link">How to memorize Quran fast</a></div>
+                  <div class="res-desc">Sheikh Hussary method — the most widely recommended approach for beginners and advanced students alike.</div>
+                  <span class="res-tag">YouTube</span>
+                </div>
+              </div>
+              <div class="res-item">
+                <div class="res-icon">▶</div>
+                <div>
+                  <div class="res-title"><a href="https://www.youtube.com/watch?v=3cjnNPua7Ag" target="_blank" class="res-link">Tajweed rules explained</a></div>
+                  <div class="res-desc">Short series covering makhaarij and essential rules for correct recitation.</div>
+                  <span class="res-tag">YouTube</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROFILE -->
+      <div class="page" id="p-profile">
+        <div class="ttl">Profile</div>
+        <div class="sub">Your memorization identity.</div>
+        <div class="grid2">
+          <div class="card">
+            <div class="ctit"><div class="cdot"></div>Your profile</div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:1.25rem">
+              <div class="prof-av" id="prof-initials">–</div>
+              <div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--sl)" id="prof-name">–</div>
+                <div style="font-size:12px;color:var(--cm);margin-top:2px" id="prof-since">–</div>
+              </div>
+            </div>
+            <label>Display name</label>
+            <input type="text" id="pf-name">
+            <label>Preferred reciter</label>
+            <select id="pf-reciter">
+              <option>Mishary Rashid Alafasy</option>
+              <option>Abdul Basit</option>
+              <option>Mahmoud Khalil Al-Hussary</option>
+              <option>Saad Al-Ghamdi</option>
+            </select>
+            <button class="btn-primary full" style="margin-top:16px" onclick="saveProfile()">Save changes</button>
+            <div id="pf-msg" class="msg"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Your stats</div>
+              <div class="grid4" style="grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0">
+                <div class="mc"><div class="ml">Total sessions</div><div class="mv" style="font-size:20px" id="ps-sessions">–</div></div>
+                <div class="mc"><div class="ml">Days active</div><div class="mv" style="font-size:20px" id="ps-days">–</div></div>
+                <div class="mc"><div class="ml">Surahs memorized</div><div class="mv" style="font-size:20px" id="ps-surahs">–</div></div>
+                <div class="mc"><div class="ml">Revisions done</div><div class="mv" style="font-size:20px" id="ps-revisions">–</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="ctit"><div class="cdot"></div>Account</div>
+              <div style="padding:8px 0;border-bottom:0.5px solid var(--gb)">
+                <div style="font-size:11px;color:var(--cm)">Email</div>
+                <div style="font-size:13px;color:var(--cr);margin-top:2px" id="prof-email">–</div>
+              </div>
+              <div style="padding:8px 0;border-bottom:0.5px solid var(--gb)">
+                <div style="font-size:11px;color:var(--cm)">Username</div>
+                <div style="font-size:13px;color:var(--cr);margin-top:2px" id="prof-username">–</div>
+              </div>
+              <div style="padding:8px 0">
+                <div style="font-size:11px;color:var(--cm)">Gender</div>
+                <div style="font-size:13px;color:var(--cr);margin-top:2px" id="prof-gender">–</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/surahs-data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
